@@ -1,6 +1,7 @@
 ﻿using System;
-using SocialNetwork.Domain.Exceptions;
+using System.Linq;
 using System.Collections.Generic;
+using SocialNetwork.Domain.Exceptions;
 
 namespace SocialNetwork.Domain.Entities
 {
@@ -41,7 +42,7 @@ namespace SocialNetwork.Domain.Entities
                 throw new UserCannotFollowHimself();
             }
 
-            if (Following.Contains(user))
+            if (Following.Any(x => x.Id == user.Id))
             {
                 throw new UserAlreadyFollowing();
             }
