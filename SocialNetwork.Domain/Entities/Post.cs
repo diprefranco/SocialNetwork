@@ -4,7 +4,7 @@ namespace SocialNetwork.Domain.Entities
 {
     public class Post
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
         public User User { get; set; }
         public string Content { get; set; }
         public DateTime PostDateTime { get; set; }

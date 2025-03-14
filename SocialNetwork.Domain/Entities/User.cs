@@ -1,16 +1,17 @@
-﻿using SocialNetwork.Domain.Exceptions;
+﻿using System;
+using SocialNetwork.Domain.Exceptions;
 using System.Collections.Generic;
 
 namespace SocialNetwork.Domain.Entities
 {
     public class User
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
         public string UserName { get; set; }
         public ICollection<Post> Posts { get; set; }
         public ICollection<User> Following { get; set; }
 
-        public User(long id, string userName)
+        public User(Guid id, string userName)
         {
             Id = id;
             UserName = userName;
@@ -18,7 +19,7 @@ namespace SocialNetwork.Domain.Entities
             Following = new List<User>();
         }
 
-        public User(long id, string userName, ICollection<User> following)
+        public User(Guid id, string userName, ICollection<User> following)
         {
             Id = id;
             UserName = userName;

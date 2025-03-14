@@ -1,8 +1,10 @@
-﻿namespace SocialNetwork.Application.Repositories.DTO
+﻿using System;
+
+namespace SocialNetwork.Application.Repositories.DTO
 {
     public class UserDTO
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
         public string UserName { get; set; }
     }
 }
