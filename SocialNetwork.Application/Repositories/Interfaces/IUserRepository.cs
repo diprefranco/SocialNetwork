@@ -9,6 +9,6 @@ namespace SocialNetwork.Application.Repositories.Interfaces
         UserFollowingDTO GetOneWithFollowingByUserName(string userName);
         UserFollowingPostsDTO GetOneWithFollowingPostsByUserName(string userName);
         void AddPost(Guid userId, string content, DateTime postDateTime);
-        void AddFollowing(string followerUserName, string followeeUserName);
+        void AddFollowing(Guid followerUserId, Guid followeeUserId);
     }
 }

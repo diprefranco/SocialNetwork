@@ -33,7 +33,7 @@ namespace SocialNetwork.Application.UseCases
             var followeeUser = new User(followeeUserDTO.Id, followeeUserDTO.UserName);
             followerUser.Follow(followeeUser);
             
-            _userRepository.AddFollowing(followerUserName, followeeUserName);
+            _userRepository.AddFollowing(followerUser.Id, followeeUser.Id);
         }
     }
 }
