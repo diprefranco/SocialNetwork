@@ -9,12 +9,10 @@ namespace SocialNetwork.Application.UseCases
     public class PostUseCase : IPostUseCase
     {
         private readonly IUserRepository _userRepository;
-        private readonly IPostRepository _postRepository;
 
-        public PostUseCase(IUserRepository userRepository, IPostRepository postRepository)
+        public PostUseCase(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            _postRepository = postRepository;
         }
 
         public PostDTO Execute(string userName, string content)
@@ -27,7 +25,7 @@ namespace SocialNetwork.Application.UseCases
 
             var user = new User(userDTO.Id, userDTO.UserName);
             var post = user.AddPost(content);
-            _postRepository.Add(post);
+            _userRepository.AddPost(post.User.Id, post.Content, post.PostDateTime);
 
             var postDTO = new PostDTO
             {
