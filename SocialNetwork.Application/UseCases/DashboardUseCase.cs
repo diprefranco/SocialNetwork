@@ -26,10 +26,10 @@ namespace SocialNetwork.Application.UseCases
 
             return userDTO.Following.SelectMany(x => x.Posts).OrderBy(x => x.PostDateTime).Select(x => new PostDTO
             {
-                UserName = userName,
+                UserName = x.UserName,
                 Content = x.Content,
                 PostDateTime = x.PostDateTime
-            });
+            }).ToList();
         }
     }
 }
