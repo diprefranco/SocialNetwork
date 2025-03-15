@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SocialNetwork.Application\SocialNetwork.Application.csproj" />
+    <ProjectReference Include="..\SocialNetwork.Infrastructure\SocialNetwork.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
