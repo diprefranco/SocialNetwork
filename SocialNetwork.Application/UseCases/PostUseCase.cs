@@ -27,14 +27,12 @@ namespace SocialNetwork.Application.UseCases
             var post = user.AddPost(content);
             _userRepository.AddPost(post.User.Id, post.Content, post.PostDateTime);
 
-            var postDTO = new PostDTO
+            return new PostDTO
             {
                 UserName = post.User.UserName,
                 Content = post.Content,
                 PostDateTime = post.PostDateTime
             };
-
-            return postDTO;
         }
     }
 }
