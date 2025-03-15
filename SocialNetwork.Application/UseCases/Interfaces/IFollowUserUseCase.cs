@@ -1,7 +1,9 @@
-﻿namespace SocialNetwork.Application.UseCases.Interfaces
+﻿using SocialNetwork.Application.UseCases.DTO;
+
+namespace SocialNetwork.Application.UseCases.Interfaces
 {
     public interface IFollowUserUseCase
     {
-        void Execute(string followerUserName, string followeeUserName);
+        FollowUserDTO Execute(string followerUserName, string followeeUserName);
     }
 }

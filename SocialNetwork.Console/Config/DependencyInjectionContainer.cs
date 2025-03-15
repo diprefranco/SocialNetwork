@@ -32,5 +32,18 @@ namespace SocialNetwork.Console.Config
                 return _postUseCase;
             }
         }
+
+        private static IFollowUserUseCase _followUserUseCase;
+        public static IFollowUserUseCase FollowUserUseCase
+        {
+            get
+            {
+                if (_followUserUseCase == null)
+                {
+                    _followUserUseCase = new FollowUserUseCase(UserRepository);
+                }
+                return _followUserUseCase;
+            }
+        }
     }
 }
