@@ -22,7 +22,7 @@ namespace SocialNetwork.Console.Commands
 
         private string GetUserName(string[] commandArguments)
         {
-            string userName = commandArguments[0].GetUserName();
+            string userName = commandArguments[0].GetUserNameWithoutSymbol();
             if (string.IsNullOrWhiteSpace(userName))
             {
                 throw new IncorrectUserNameArgument();

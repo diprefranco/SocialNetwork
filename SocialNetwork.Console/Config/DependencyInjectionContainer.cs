@@ -45,5 +45,18 @@ namespace SocialNetwork.Console.Config
                 return _followUserUseCase;
             }
         }
+
+        private static IDashboardUseCase _dashboardUseCase;
+        public static IDashboardUseCase DashboardUseCase
+        {
+            get
+            {
+                if (_dashboardUseCase == null)
+                {
+                    _dashboardUseCase = new DashboardUseCase(UserRepository);
+                }
+                return _dashboardUseCase;
+            }
+        }
     }
 }

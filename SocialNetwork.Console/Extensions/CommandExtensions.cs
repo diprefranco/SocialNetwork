@@ -27,7 +27,7 @@ namespace SocialNetwork.Console.Extensions
         /// </summary>
         /// <param name="userNameWithSymbol"></param>
         /// <returns></returns>
-        public static string GetUserName(this string userNameWithSymbol)
+        public static string GetUserNameWithoutSymbol(this string userNameWithSymbol)
         {
             return userNameWithSymbol.StartsWith(USER_SYMBOL) ? userNameWithSymbol.Substring(1) : string.Empty;
         }
