@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using SocialNetwork.Console.Extensions;
 using SocialNetwork.Console.Commands.Interfaces;
 
 namespace SocialNetwork.Console.Commands.Factories
@@ -7,12 +7,8 @@ namespace SocialNetwork.Console.Commands.Factories
     {
         public static ICommand CreateCommand(string commandLine)
         {
-            const char COMMAND_LINE_SEPARATOR = ' ';
-            string[] commandParts = commandLine.Split(COMMAND_LINE_SEPARATOR);
-
-            ICommand command = CreateFromCommandName(commandParts[0]);
-            command.CommandArguments = commandParts.Skip(1).ToArray();
-
+            ICommand command = CreateFromCommandName(commandLine.GetCommandName());
+            command.CommandArguments = commandLine.GetCommandArguments();
             return command;
         }
 

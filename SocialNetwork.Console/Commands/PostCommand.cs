@@ -1,5 +1,9 @@
-﻿using SocialNetwork.Console.Config;
+﻿using System.Linq;
+using SocialNetwork.Console.Config;
 using SocialNetwork.Console.Commands.Interfaces;
+using SocialNetwork.Console.Exceptions;
+using SocialNetwork.Console.Extensions;
+using SocialNetwork.Application.UseCases.DTO;
 
 namespace SocialNetwork.Console.Commands
 {
@@ -10,14 +14,35 @@ namespace SocialNetwork.Console.Commands
 
         public string[] Execute()
         {
-            //TODO: treat arguments. If incorrect arguments, return arguments error message.
-            var post = DependencyInjectionContainer.PostUseCase.Execute("Alfonso", "Hola mundo");
+            string userName = GetUserName(_commandArguments);
+            string content = GetPostContent(_commandArguments);
+            var post = DependencyInjectionContainer.PostUseCase.Execute(userName, content);
+            return new[] { GetResponseOutputFormat(post) };
+        }
 
-            //TODO: in helpers add hour format and post content format --> "".
-            return new[] { $"{post.UserName} posted -> \"{post.Content}\" @{post.PostDateTime}" };
+        private string GetUserName(string[] commandArguments)
+        {
+            string userName = commandArguments[0].GetUserName();
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new IncorrectUserNameArgument();
+            }
+            return userName;
+        }
+        
+        private string GetPostContent(string[] commandArguments)
+        {
+            string postContent = string.Join(CommandExtensions.COMMAND_LINE_SEPARATOR, commandArguments.Skip(1));
+            if (string.IsNullOrWhiteSpace(postContent))
+            {
+                throw new IncorrectPostContentArgument();
+            }
+            return postContent;
+        }
 
-            //        Console.WriteLine("  Alfonso posted -> \"Hola mundo\" @10:30");
-
+        private string GetResponseOutputFormat(PostDTO post)
+        {
+            return $"{post.UserName} posted -> {post.Content.GetPostContentFormat()} {post.PostDateTime.GetHourFormat()}";
         }
     }
 }
