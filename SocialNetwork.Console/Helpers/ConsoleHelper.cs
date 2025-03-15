@@ -30,5 +30,13 @@
                 }
             }
         }
+
+        /// <summary>
+        /// Clears the console.
+        /// </summary>
+        public static void Clear()
+        {
+            Console.Clear();
+        }
     }
 }

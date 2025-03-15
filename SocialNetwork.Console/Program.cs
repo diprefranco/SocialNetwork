@@ -16,6 +16,17 @@ namespace SocialNetwork.Console
                     continue;
                 }
 
+                if (commandLine == "clear")
+                {
+                    ConsoleHelper.Clear();
+                    continue;
+                }
+
+                if (commandLine == "exit")
+                {
+                    return;
+                }
+
                 string[] results = CommandFactory.CreateCommand(commandLine).Execute();
                 ConsoleHelper.WriteCommandLineResponse(results);
             }
