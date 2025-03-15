@@ -4,11 +4,12 @@ namespace SocialNetwork.Console.Commands
 {
     public class InvalidCommand : ICommand
     {
-        public string[] CommandArguments { set => throw new System.NotImplementedException(); }
+        private string[] _commandArguments;
+        public string[] CommandArguments { set => _commandArguments = value; }
 
         public string[] Execute()
         {
-            throw new System.NotImplementedException();
+            return new[] { "Comando inválido" };
         }
     }
 }
