@@ -25,7 +25,7 @@ namespace SocialNetwork.Console.Commands
             string userName = commandArguments[0].GetUserNameWithoutSymbol();
             if (string.IsNullOrWhiteSpace(userName))
             {
-                throw new IncorrectUserNameArgument();
+                throw new IncorrectUserNameArgumentException();
             }
             return userName;
         }
@@ -35,7 +35,7 @@ namespace SocialNetwork.Console.Commands
             string postContent = string.Join(CommandExtensions.COMMAND_LINE_SEPARATOR, commandArguments.Skip(1)).Trim();
             if (string.IsNullOrWhiteSpace(postContent))
             {
-                throw new IncorrectPostContentArgument();
+                throw new IncorrectPostContentArgumentException();
             }
             return postContent;
         }

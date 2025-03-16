@@ -39,12 +39,12 @@ namespace SocialNetwork.Domain.Entities
         {
             if (user.Id == Id)
             {
-                throw new UserCannotFollowHimself();
+                throw new UserCannotFollowHimselfException();
             }
 
             if (Following.Any(x => x.Id == user.Id))
             {
-                throw new UserAlreadyFollowing(UserName, user.UserName);
+                throw new UserAlreadyFollowingException(UserName, user.UserName);
             }
 
             Following.Add(user);

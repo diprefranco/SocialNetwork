@@ -24,7 +24,7 @@ namespace SocialNetwork.Console.Commands
             string userName = commandArguments[argumentPosition].GetUserNameWithoutSymbol();
             if (string.IsNullOrWhiteSpace(userName))
             {
-                throw new IncorrectUserNameArgument();
+                throw new IncorrectUserNameArgumentException();
             }
             return userName;
         }
