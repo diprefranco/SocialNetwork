@@ -17,21 +17,10 @@ namespace SocialNetwork.Application.UseCases
 
         public PostDTO Execute(string userName, string content)
         {
-            if (string.IsNullOrWhiteSpace(userName))
-            {
-                throw new IncorrectUserNameArgumentException();
-            }
+            ValidateUserName(userName);
+            ValidatePostContent(content);
 
-            if (string.IsNullOrWhiteSpace(content))
-            {
-                throw new IncorrectPostContentArgumentException();
-            }
-
-            var userDTO = _userRepository.GetOneByUserName(userName);
-            if (userDTO == null)
-            {
-                throw new UserNotFoundException(userName);
-            }
+            var userDTO = GetUserFromRepository(userName);
 
             var user = new User(userDTO.Id, userDTO.UserName);
             var post = user.AddPost(content);
@@ -44,6 +33,33 @@ namespace SocialNetwork.Application.UseCases
                 Content = post.Content,
                 PostDateTime = post.PostDateTime
             };
+        }
+        
+        
+        private static void ValidateUserName(string userName)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new IncorrectUserNameArgumentException();
+            }
+        }
+
+        private static void ValidatePostContent(string content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                throw new IncorrectPostContentArgumentException();
+            }
+        }
+        
+        private Repositories.DTO.UserDTO GetUserFromRepository(string userName)
+        {
+            var userDTO = _userRepository.GetOneByUserName(userName);
+            if (userDTO == null)
+            {
+                throw new UserNotFoundException(userName);
+            }
+            return userDTO;
         }
     }
 }
