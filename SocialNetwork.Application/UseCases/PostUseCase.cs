@@ -17,6 +17,16 @@ namespace SocialNetwork.Application.UseCases
 
         public PostDTO Execute(string userName, string content)
         {
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new IncorrectUserNameArgumentException();
+            }
+
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                throw new IncorrectPostContentArgumentException();
+            }
+
             var userDTO = _userRepository.GetOneByUserName(userName);
             if (userDTO == null)
             {
@@ -25,6 +35,7 @@ namespace SocialNetwork.Application.UseCases
 
             var user = new User(userDTO.Id, userDTO.UserName);
             var post = user.AddPost(content);
+
             _userRepository.AddPost(post.User.Id, post.Content, post.PostDateTime);
 
             return new PostDTO
