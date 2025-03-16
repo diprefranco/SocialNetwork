@@ -1,5 +1,6 @@
 ﻿using SocialNetwork.Console.Helpers;
 using SocialNetwork.Console.Commands.Factories;
+using SocialNetwork.Common.Exceptions;
 
 namespace SocialNetwork.Console
 {
@@ -32,9 +33,13 @@ namespace SocialNetwork.Console
                     string[] results = CommandFactory.CreateCommand(commandLine).Execute();
                     ConsoleHelper.WriteCommandLineResponse(results);
                 }
-                catch (System.Exception ex)
+                catch (UserException ex)
                 {
                     ConsoleHelper.WriteCommandLineResponse(ex.Message);
+                }
+                catch (System.Exception)
+                {
+                    ConsoleHelper.WriteCommandLineResponse("Ha ocurrido un error inesperado, vuelva a intentarlo más tarde");
                 }
             }
         }
