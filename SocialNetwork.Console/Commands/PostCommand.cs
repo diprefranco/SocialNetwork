@@ -32,7 +32,7 @@ namespace SocialNetwork.Console.Commands
         
         private string GetPostContent(string[] commandArguments)
         {
-            string postContent = string.Join(CommandExtensions.COMMAND_LINE_SEPARATOR, commandArguments.Skip(1));
+            string postContent = string.Join(CommandExtensions.COMMAND_LINE_SEPARATOR, commandArguments.Skip(1)).Trim();
             if (string.IsNullOrWhiteSpace(postContent))
             {
                 throw new IncorrectPostContentArgument();
