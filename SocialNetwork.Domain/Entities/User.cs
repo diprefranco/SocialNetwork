@@ -44,7 +44,7 @@ namespace SocialNetwork.Domain.Entities
 
             if (Following.Any(x => x.Id == user.Id))
             {
-                throw new UserAlreadyFollowing();
+                throw new UserAlreadyFollowing(UserName, user.UserName);
             }
 
             Following.Add(user);

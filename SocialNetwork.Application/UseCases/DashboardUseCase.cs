@@ -21,7 +21,7 @@ namespace SocialNetwork.Application.UseCases
             var userDTO = _userRepository.GetOneWithFollowingPostsByUserName(userName);
             if (userDTO == null)
             {
-                throw new UserNotFoundException();
+                throw new UserNotFoundException(userName);
             }
 
             return userDTO.Following.SelectMany(x => x.Posts).OrderBy(x => x.PostDateTime).Select(x => new PostDTO

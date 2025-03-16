@@ -21,13 +21,13 @@ namespace SocialNetwork.Application.UseCases
             var followerUserDTO = _userRepository.GetOneWithFollowingByUserName(followerUserName);
             if (followerUserDTO == null)
             {
-                throw new UserNotFoundException();
+                throw new UserNotFoundException(followerUserName);
             }
 
             var followeeUserDTO = _userRepository.GetOneByUserName(followeeUserName);
             if (followeeUserDTO == null)
             {
-                throw new UserNotFoundException();
+                throw new UserNotFoundException(followeeUserName);
             }
 
             var followerUser = new User(followerUserDTO.Id, followerUserDTO.UserName, followerUserDTO.Following.Select(x => new User(x.Id, x.UserName)).ToList());

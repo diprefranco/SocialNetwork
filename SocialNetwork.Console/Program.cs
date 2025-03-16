@@ -9,26 +9,33 @@ namespace SocialNetwork.Console
         {
             while (true)
             {
-                string commandLine = ConsoleHelper.ReadCommandLine();
-
-                if (string.IsNullOrWhiteSpace(commandLine))
+                try
                 {
-                    continue;
-                }
+                    string commandLine = ConsoleHelper.ReadCommandLine();
 
-                if (commandLine == "clear")
+                    if (string.IsNullOrWhiteSpace(commandLine))
+                    {
+                        continue;
+                    }
+
+                    if (commandLine == "clear")
+                    {
+                        ConsoleHelper.Clear();
+                        continue;
+                    }
+
+                    if (commandLine == "exit")
+                    {
+                        return;
+                    }
+
+                    string[] results = CommandFactory.CreateCommand(commandLine).Execute();
+                    ConsoleHelper.WriteCommandLineResponse(results);
+                }
+                catch (System.Exception ex)
                 {
-                    ConsoleHelper.Clear();
-                    continue;
+                    ConsoleHelper.WriteCommandLineResponse(ex.Message);
                 }
-
-                if (commandLine == "exit")
-                {
-                    return;
-                }
-
-                string[] results = CommandFactory.CreateCommand(commandLine).Execute();
-                ConsoleHelper.WriteCommandLineResponse(results);
             }
         }
     }

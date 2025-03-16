@@ -4,6 +4,8 @@
 
     public static class ConsoleHelper
     {
+        private static readonly string DEFAULT_INDENTATION = "  ";
+
         /// <summary>
         /// Reads the next command line from the user input.
         /// </summary>
@@ -22,15 +24,22 @@
         {
             if (response != null && response.Length > 0)
             {
-                const string DEFAULT_INDENTATION = "  ";
-
                 foreach (string line in response)
                 {
-                    Console.WriteLine(DEFAULT_INDENTATION + line);
+                    WriteCommandLineResponse(line);
                 }
             }
         }
 
+        /// <summary>
+        /// Writes the command line response with specific format.
+        /// </summary>
+        /// <param name="response"></param>
+        public static void WriteCommandLineResponse(string response)
+        {
+            Console.WriteLine(DEFAULT_INDENTATION + response);
+        }
+        
         /// <summary>
         /// Clears the console.
         /// </summary>

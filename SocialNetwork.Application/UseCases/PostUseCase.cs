@@ -20,7 +20,7 @@ namespace SocialNetwork.Application.UseCases
             var userDTO = _userRepository.GetOneByUserName(userName);
             if (userDTO == null)
             {
-                throw new UserNotFoundException();
+                throw new UserNotFoundException(userName);
             }
 
             var user = new User(userDTO.Id, userDTO.UserName);
