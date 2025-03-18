@@ -221,5 +221,81 @@ namespace SocialNetwork.Tests.Application.UseCases
                 Times.Never
             );
         }
+
+        [Fact]
+        public void Execute_FollowerUserNull_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods()
+        {
+            //Arrange
+            const string followerUserName = null;
+            const string followeeUserName = "Ivan";
+            Execute_BothUsersInvalid_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods(followerUserName, followeeUserName);
+        }
+
+        [Fact]
+        public void Execute_FollowerUserEmpty_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods()
+        {
+            //Arrange
+            const string followerUserName = "";
+            const string followeeUserName = "Ivan";
+            Execute_BothUsersInvalid_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods(followerUserName, followeeUserName);
+        }
+
+        [Fact]
+        public void Execute_FollowerUserWhiteSpaces_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods()
+        {
+            //Arrange
+            const string followerUserName = "    ";
+            const string followeeUserName = "Ivan";
+            Execute_BothUsersInvalid_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods(followerUserName, followeeUserName);
+        }
+
+        [Fact]
+        public void Execute_FolloweeUserNull_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods()
+        {
+            //Arrange
+            const string followerUserName = "Alicia";
+            const string followeeUserName = null;
+            Execute_BothUsersInvalid_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods(followerUserName, followeeUserName);
+        }
+
+        [Fact]
+        public void Execute_FolloweeUserEmpty_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods()
+        {
+            //Arrange
+            const string followerUserName = "Alicia";
+            const string followeeUserName = "";
+            Execute_BothUsersInvalid_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods(followerUserName, followeeUserName);
+        }
+
+        [Fact]
+        public void Execute_FolloweeUserWhiteSpaces_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods()
+        {
+            //Arrange
+            const string followerUserName = "Alicia";
+            const string followeeUserName = "    ";
+            Execute_BothUsersInvalid_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods(followerUserName, followeeUserName);
+        }
+
+        private void Execute_BothUsersInvalid_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods(string followerUserName, string followeeUserName)
+        {
+            //Arrange
+            var mockUserRepository = new Mock<IUserRepository>();
+            IFollowUserUseCase followUserUseCase = new FollowUserUseCase(mockUserRepository.Object);
+
+            //Act & Assert
+            Assert.Throws<SocialNetwork.Application.Exceptions.IncorrectUserNameArgumentException>(() => followUserUseCase.Execute(followerUserName, followeeUserName));
+            mockUserRepository.Verify(
+                repo => repo.GetOneWithFollowingByUserName(It.IsAny<string>()),
+                Times.Never
+            );
+            mockUserRepository.Verify(
+                repo => repo.GetOneByUserName(It.IsAny<string>()),
+                Times.Never
+            );
+            mockUserRepository.Verify(
+                repo => repo.AddFollowing(It.IsAny<Guid>(), It.IsAny<Guid>()),
+                Times.Never
+            );
+        }
     }
 }

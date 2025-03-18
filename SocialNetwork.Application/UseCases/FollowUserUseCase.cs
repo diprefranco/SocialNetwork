@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using SocialNetwork.Application.Exceptions;
+using SocialNetwork.Application.Repositories.DTO;
 using SocialNetwork.Application.Repositories.Interfaces;
 using SocialNetwork.Application.UseCases.DTO;
 using SocialNetwork.Application.UseCases.Interfaces;
@@ -18,17 +19,11 @@ namespace SocialNetwork.Application.UseCases
 
         public FollowUserDTO Execute(string followerUserName, string followeeUserName)
         {
-            var followerUserDTO = _userRepository.GetOneWithFollowingByUserName(followerUserName);
-            if (followerUserDTO == null)
-            {
-                throw new UserNotFoundException(followerUserName);
-            }
+            ValidateUserName(followerUserName);
+            ValidateUserName(followeeUserName);
 
-            var followeeUserDTO = _userRepository.GetOneByUserName(followeeUserName);
-            if (followeeUserDTO == null)
-            {
-                throw new UserNotFoundException(followeeUserName);
-            }
+            UserFollowingDTO followerUserDTO = GetUserWithFollowingFromRepository(followerUserName);
+            UserDTO followeeUserDTO = GetUserFromRepository(followeeUserName);
 
             var followerUser = new User(followerUserDTO.Id, followerUserDTO.UserName, followerUserDTO.Following.Select(x => new User(x.Id, x.UserName)).ToList());
             var followeeUser = new User(followeeUserDTO.Id, followeeUserDTO.UserName);
@@ -41,6 +36,35 @@ namespace SocialNetwork.Application.UseCases
                 FollowerUserName = followerUser.UserName,
                 FolloweeUserName = followeeUser.UserName
             };
+        }
+
+
+        private static void ValidateUserName(string userName)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new IncorrectUserNameArgumentException();
+            }
+        }
+
+        private UserFollowingDTO GetUserWithFollowingFromRepository(string userName)
+        {
+            var userDTO = _userRepository.GetOneWithFollowingByUserName(userName);
+            if (userDTO == null)
+            {
+                throw new UserNotFoundException(userName);
+            }
+            return userDTO;
+        }
+
+        private UserDTO GetUserFromRepository(string userName)
+        {
+            var userDTO = _userRepository.GetOneByUserName(userName);
+            if (userDTO == null)
+            {
+                throw new UserNotFoundException(userName);
+            }
+            return userDTO;
         }
     }
 }
