@@ -72,7 +72,7 @@ namespace SocialNetwork.Tests.Application.UseCases
                 Times.Once
             );
         }
-        
+
         [Fact]
         public void Execute_FollowerUserExistsAlreadyFollowing_ShouldThrowUserAlreadyFollowingExceptionAndNotCallAddFollowing()
         {
@@ -109,6 +109,47 @@ namespace SocialNetwork.Tests.Application.UseCases
 
             //Act & Assert
             Assert.Throws<SocialNetwork.Domain.Exceptions.UserAlreadyFollowingException>(() => followUserUseCase.Execute(followerUserName, followeeUserName));
+            mockUserRepository.Verify(
+                repo => repo.AddFollowing(It.IsAny<Guid>(), It.IsAny<Guid>()),
+                Times.Never
+            );
+        }
+
+        [Fact]
+        public void Execute_FollowerUserExistsAndWantsToFollowHimself_ShouldThrowUserCannotFollowHimselfExceptionAndNotCallAddFollowing()
+        {
+            //Arrange
+            Guid followerUserId = Guid.NewGuid();
+            const string followerUserName = "Alicia";
+            ICollection<UserDTO> following = new List<UserDTO>
+            {
+                new UserDTO
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "Pedro"
+                },
+                new UserDTO
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "Juan"
+                }
+            };
+
+            var followerUser = new UserFollowingDTO { Id = followerUserId, UserName = followerUserName, Following = following };
+            var followeeUser = new UserDTO { Id = followerUserId, UserName = followerUserName };
+
+            var mockUserRepository = new Mock<IUserRepository>();
+            mockUserRepository
+                .Setup(repo => repo.GetOneWithFollowingByUserName(followerUserName))
+                .Returns(followerUser);
+            mockUserRepository
+                .Setup(repo => repo.GetOneByUserName(followerUserName))
+                .Returns(followeeUser);
+
+            IFollowUserUseCase followUserUseCase = new FollowUserUseCase(mockUserRepository.Object);
+
+            //Act & Assert
+            Assert.Throws<SocialNetwork.Domain.Exceptions.UserCannotFollowHimselfException>(() => followUserUseCase.Execute(followerUserName, followerUserName));
             mockUserRepository.Verify(
                 repo => repo.AddFollowing(It.IsAny<Guid>(), It.IsAny<Guid>()),
                 Times.Never
