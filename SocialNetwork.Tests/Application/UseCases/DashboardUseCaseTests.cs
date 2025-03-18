@@ -99,5 +99,43 @@ namespace SocialNetwork.Tests.Application.UseCases
             //Assert
             Assert.True(posts.SequenceEqual(posts.OrderBy(p => p.PostDateTime)));
         }
+        
+        [Fact]
+        public void Execute_UserNull_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods()
+        {
+            //Arrange
+            const string userName = null;
+            Execute_UserInvalid_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods(userName);
+        }
+
+        [Fact]
+        public void Execute_UserEmpty_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods()
+        {
+            //Arrange
+            const string userName = "";
+            Execute_UserInvalid_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods(userName);
+        }
+        
+        [Fact]
+        public void Execute_UserUserWhiteSpaces_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods()
+        {
+            //Arrange
+            const string userName = "    ";
+            Execute_UserInvalid_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods(userName);
+        }
+        
+        private void Execute_UserInvalid_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods(string userName)
+        {
+            //Arrange
+            var mockUserRepository = new Mock<IUserRepository>();
+            IDashboardUseCase dashboardUseCase = new DashboardUseCase(mockUserRepository.Object);
+
+            //Act & Assert
+            Assert.Throws<SocialNetwork.Application.Exceptions.IncorrectUserNameArgumentException>(() => dashboardUseCase.Execute(userName));
+            mockUserRepository.Verify(
+                repo => repo.GetOneWithFollowingPostsByUserName(It.IsAny<string>()),
+                Times.Never
+            );
+        }
     }
 }
