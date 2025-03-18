@@ -101,6 +101,32 @@ namespace SocialNetwork.Tests.Application.UseCases
         }
         
         [Fact]
+        public void Execute_UserExistsWithNoFollowing_ShouldReturnEmptyList()
+        {
+            //Arrange
+            const string userName = "Alicia";
+            UserFollowingPostsDTO userDTO = new UserFollowingPostsDTO
+            {
+                Id = Guid.NewGuid(),
+                UserName = userName,
+                Following = new List<UserPostsDTO>()
+            };
+
+            var mockUserRepository = new Mock<IUserRepository>();
+            mockUserRepository
+                .Setup(repo => repo.GetOneWithFollowingPostsByUserName(userName))
+                .Returns(userDTO);
+
+            IDashboardUseCase dashboardUseCase = new DashboardUseCase(mockUserRepository.Object);
+
+            //Act
+            IEnumerable<SocialNetwork.Application.UseCases.DTO.PostDTO> posts = dashboardUseCase.Execute(userName);
+
+            //Assert
+            Assert.Empty(posts);
+        }
+
+        [Fact]
         public void Execute_UserNotExists_ShouldThrowUserNotFoundException()
         {
             //Arrange
