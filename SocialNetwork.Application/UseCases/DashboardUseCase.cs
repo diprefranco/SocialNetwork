@@ -18,6 +18,8 @@ namespace SocialNetwork.Application.UseCases
 
         public IEnumerable<PostDTO> Execute(string userName)
         {
+            ValidateUserName(userName);
+
             var userDTO = _userRepository.GetOneWithFollowingPostsByUserName(userName);
             if (userDTO == null)
             {
@@ -30,6 +32,15 @@ namespace SocialNetwork.Application.UseCases
                 Content = x.Content,
                 PostDateTime = x.PostDateTime
             }).ToList();
+        }
+
+
+        private static void ValidateUserName(string userName)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
+            {
+                throw new IncorrectUserNameArgumentException();
+            }
         }
     }
 }
