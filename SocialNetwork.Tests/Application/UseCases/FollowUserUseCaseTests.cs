@@ -155,5 +155,71 @@ namespace SocialNetwork.Tests.Application.UseCases
                 Times.Never
             );
         }
+
+        [Fact]
+        public void Execute_FollowerUserNotExists_ShouldThrowUserNotFoundExceptionAndNotCallAddFollowing()
+        {
+            //Arrange
+            const string followerUserName = "Alicia";
+            const string followeeUserName = "Ivan";
+            var followeeUser = new UserDTO { Id = Guid.NewGuid(), UserName = followeeUserName };
+
+            var mockUserRepository = new Mock<IUserRepository>();
+            mockUserRepository
+                .Setup(repo => repo.GetOneWithFollowingByUserName(followerUserName))
+                .Returns((UserFollowingDTO)null);
+            mockUserRepository
+                .Setup(repo => repo.GetOneByUserName(followeeUserName))
+                .Returns(followeeUser);
+
+            IFollowUserUseCase followUserUseCase = new FollowUserUseCase(mockUserRepository.Object);
+
+            //Act & Assert
+            Assert.Throws<SocialNetwork.Application.Exceptions.UserNotFoundException>(() => followUserUseCase.Execute(followerUserName, followeeUserName));
+            mockUserRepository.Verify(
+                repo => repo.AddFollowing(It.IsAny<Guid>(), It.IsAny<Guid>()),
+                Times.Never
+            );
+        }
+
+        [Fact]
+        public void Execute_FollowerUserExistsButFolloweeUserNotExists_ShouldThrowUserNotFoundExceptionAndNotCallAddFollowing()
+        {
+            //Arrange
+            const string followerUserName = "Alicia";
+            const string followeeUserName = "Ivan";
+            ICollection<UserDTO> following = new List<UserDTO>
+            {
+                new UserDTO
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "Pedro"
+                },
+                new UserDTO
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "Juan"
+                }
+            };
+
+            var followerUser = new UserFollowingDTO { Id = Guid.NewGuid(), UserName = followerUserName, Following = following };
+
+            var mockUserRepository = new Mock<IUserRepository>();
+            mockUserRepository
+                .Setup(repo => repo.GetOneWithFollowingByUserName(followerUserName))
+                .Returns(followerUser);
+            mockUserRepository
+                .Setup(repo => repo.GetOneByUserName(followeeUserName))
+                .Returns((UserDTO)null);
+
+            IFollowUserUseCase followUserUseCase = new FollowUserUseCase(mockUserRepository.Object);
+
+            //Act & Assert
+            Assert.Throws<SocialNetwork.Application.Exceptions.UserNotFoundException>(() => followUserUseCase.Execute(followerUserName, followeeUserName));
+            mockUserRepository.Verify(
+                repo => repo.AddFollowing(It.IsAny<Guid>(), It.IsAny<Guid>()),
+                Times.Never
+            );
+        }
     }
 }
