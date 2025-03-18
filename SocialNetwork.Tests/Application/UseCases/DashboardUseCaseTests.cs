@@ -101,6 +101,23 @@ namespace SocialNetwork.Tests.Application.UseCases
         }
         
         [Fact]
+        public void Execute_UserNotExists_ShouldThrowUserNotFoundException()
+        {
+            //Arrange
+            const string userName = "Juan";
+
+            var mockUserRepository = new Mock<IUserRepository>();
+            mockUserRepository
+                .Setup(repo => repo.GetOneWithFollowingPostsByUserName(userName))
+                .Returns((UserFollowingPostsDTO)null);
+
+            IDashboardUseCase dashboardUseCase = new DashboardUseCase(mockUserRepository.Object);
+
+            //Act & Assert
+            Assert.Throws<SocialNetwork.Application.Exceptions.UserNotFoundException>(() => dashboardUseCase.Execute(userName));
+        }
+
+        [Fact]
         public void Execute_UserNull_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods()
         {
             //Arrange
