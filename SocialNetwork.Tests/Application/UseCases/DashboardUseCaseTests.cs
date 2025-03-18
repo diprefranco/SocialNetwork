@@ -90,7 +90,7 @@ namespace SocialNetwork.Tests.Application.UseCases
             mockUserRepository
                 .Setup(repo => repo.GetOneWithFollowingPostsByUserName(userName))
                 .Returns(userDTO);
-            
+
             IDashboardUseCase dashboardUseCase = new DashboardUseCase(mockUserRepository.Object);
 
             //Act
@@ -99,7 +99,7 @@ namespace SocialNetwork.Tests.Application.UseCases
             //Assert
             Assert.True(posts.SequenceEqual(posts.OrderBy(p => p.PostDateTime)));
         }
-        
+
         [Fact]
         public void Execute_UserExistsWithNoFollowing_ShouldReturnEmptyList()
         {
@@ -110,6 +110,48 @@ namespace SocialNetwork.Tests.Application.UseCases
                 Id = Guid.NewGuid(),
                 UserName = userName,
                 Following = new List<UserPostsDTO>()
+            };
+
+            var mockUserRepository = new Mock<IUserRepository>();
+            mockUserRepository
+                .Setup(repo => repo.GetOneWithFollowingPostsByUserName(userName))
+                .Returns(userDTO);
+
+            IDashboardUseCase dashboardUseCase = new DashboardUseCase(mockUserRepository.Object);
+
+            //Act
+            IEnumerable<SocialNetwork.Application.UseCases.DTO.PostDTO> posts = dashboardUseCase.Execute(userName);
+
+            //Assert
+            Assert.Empty(posts);
+        }
+
+        [Fact]
+        public void Execute_UserExistsWithFollowingWithNoPosts_ShouldReturnEmptyList()
+        {
+            //Arrange
+            const string userName = "Alicia";
+            const string userNameFollowing1 = "Alfonso";
+            const string userNameFollowing2 = "Ivan";
+            UserFollowingPostsDTO userDTO = new UserFollowingPostsDTO
+            {
+                Id = Guid.NewGuid(),
+                UserName = userName,
+                Following = new List<UserPostsDTO>
+                {
+                    new UserPostsDTO
+                    {
+                        Id = Guid.NewGuid(),
+                        UserName = userNameFollowing1,
+                        Posts = new List<PostDTO>()
+                    },
+                    new UserPostsDTO
+                    {
+                        Id = Guid.NewGuid(),
+                        UserName = userNameFollowing2,
+                        Posts = new List<PostDTO>()
+                    }
+                }
             };
 
             var mockUserRepository = new Mock<IUserRepository>();
@@ -158,7 +200,7 @@ namespace SocialNetwork.Tests.Application.UseCases
             const string userName = "";
             Execute_UserInvalid_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods(userName);
         }
-        
+
         [Fact]
         public void Execute_UserUserWhiteSpaces_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods()
         {
@@ -166,7 +208,7 @@ namespace SocialNetwork.Tests.Application.UseCases
             const string userName = "    ";
             Execute_UserInvalid_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods(userName);
         }
-        
+
         private void Execute_UserInvalid_ShouldThrowIncorrectUserNameArgumentExceptionAndNotCallRepositoryMethods(string userName)
         {
             //Arrange
