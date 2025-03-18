@@ -72,5 +72,47 @@ namespace SocialNetwork.Tests.Application.UseCases
                 Times.Once
             );
         }
+        
+        [Fact]
+        public void Execute_FollowerUserExistsAlreadyFollowing_ShouldThrowUserAlreadyFollowingExceptionAndNotCallAddFollowing()
+        {
+            //Arrange
+            const string followerUserName = "Alicia";
+            const string followeeUserName = "Ivan";
+            ICollection<UserDTO> following = new List<UserDTO>
+            {
+                new UserDTO
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "Pedro"
+                },
+                new UserDTO
+                {
+                    Id = Guid.NewGuid(),
+                    UserName = "Juan"
+                }
+            };
+
+            var followerUser = new UserFollowingDTO { Id = Guid.NewGuid(), UserName = followerUserName, Following = following };
+            var followeeUser = new UserDTO { Id = Guid.NewGuid(), UserName = followeeUserName };
+            following.Add(followeeUser);
+
+            var mockUserRepository = new Mock<IUserRepository>();
+            mockUserRepository
+                .Setup(repo => repo.GetOneWithFollowingByUserName(followerUserName))
+                .Returns(followerUser);
+            mockUserRepository
+                .Setup(repo => repo.GetOneByUserName(followeeUserName))
+                .Returns(followeeUser);
+
+            IFollowUserUseCase followUserUseCase = new FollowUserUseCase(mockUserRepository.Object);
+
+            //Act & Assert
+            Assert.Throws<SocialNetwork.Domain.Exceptions.UserAlreadyFollowingException>(() => followUserUseCase.Execute(followerUserName, followeeUserName));
+            mockUserRepository.Verify(
+                repo => repo.AddFollowing(It.IsAny<Guid>(), It.IsAny<Guid>()),
+                Times.Never
+            );
+        }
     }
 }
